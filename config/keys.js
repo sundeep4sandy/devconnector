@@ -1,6 +1,5 @@
-var username = 'sundeep4sandy';
-var Password = 'sundeep4sandy';
-module.exports = {
-  mongoURI: 'mongodb://'+username+':'+Password+'@ds141812.mlab.com:41812/devconnector',
-  secretOrKey: 'secret',
-};
+if (process.env.NODE_ENV === 'production') {
+  module.exports = require('./keys_prod');
+} else {
+  module.exports = require('./keys_dev');
+}
