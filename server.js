@@ -10,31 +10,18 @@ const posts = require('./routes/api/posts');
 
 const app = express();
 
-// Server static assets if in production
-if (process.env.NODE_ENV === 'production') {
-  // Set static folder
-  app.use(express.static('client/build'));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-  });
-}
-
 // Body parser middleware
-
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // DB Config
-const db = require('./config/keys.js').mongoURI;
+const db = require('./config/keys').mongoURI;
 
 // Connect to MongoDB
 mongoose
-  .connect(db, { useNewUrlParser: true })
+  .connect(db)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
-
-app.get('/', (req, res) => res.send('Hello World'));
 
 // Passport middleware
 app.use(passport.initialize());
@@ -47,6 +34,15 @@ app.use('/api/users', users);
 app.use('/api/profile', profile);
 app.use('/api/posts', posts);
 
+// Server static assets if in production
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static('client/build'));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
 
 const port = process.env.PORT || 5000;
 
